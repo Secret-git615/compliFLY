@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CompliFLY - Aviation Compliance Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="logo">CompliFLY</div>
+        <nav>
+            <a href="#home">Home</a>
+            <a href="#pricing">Pricing</a>
+            <a href="#contact">Contact Us</a>
+            <a href="Login.html" class="btn">Login</a>
+        </nav>
+    </header>
+
+    <section id="home">
+        <div class="hero-content">
+            <h1>CompliFLY</h1>
+            <p>Streamline your aviation compliance with our cutting-edge document tracking and management solutions. Ensure safety, efficiency, and regulatory adherence for your fleet.</p>
+            <a href="#pricing" class="btn">Get Started</a>
+        </div>
+        <div class="hero-image">
+            Aviation Compliance Dashboard
+        </div>
+    </section>
+
+    <section id="pricing">
+        <div class="pricing-header">
+            <h2>Choose Your Plan</h2>
+            <p>Select the package that best fits your aviation management needs and unlock premium features.</p>
+        </div>
+        <div class="pricing-cards">
+            <div class="card">
+                <h3>Basic</h3>
+                <div class="price">₱5,000.00 / year</div>
+                <ul>
+                    <li>Core document tracking</li>
+                    <li>Automated reminders</li>
+                    <li>Basic dashboard</li>
+                    <li>Up to 3 aircraft managed</li>
+                    <li>10 GB cloud storage</li>
+                    <li>Additional cloud storage - ₱300.00 / GB</li>
+                </ul>
+                <br>
+                <br>
+                <a href="basic.html" class="btn">Subscribe</a>
+            </div>
+            <div class="card">
+                <h3>Professional</h3>
+                <div class="price">₱8,000.00 / year</div>
+                <ul>
+                    <li>All Basic features + advanced reporting</li>
+                    <li>Multi-user access and role management</li>
+                    <li>Customizable dashboards</li>
+                    <li>Manage up to 10 aircraft</li>
+                    <li>30 GB cloud storage</li>
+                    <li>Additional cloud storage - ₱300.00 / GB</li>
+                </ul>
+
+                <a href="professional.html" class="btn">Subscribe</a>
+            </div>
+            <div class="card">
+                <h3>Enterprise</h3>
+                <div class="price">₱10,000.00 / year</div>
+                <ul>
+                    <li>Full features</li>
+                    <li>Priority support</li>
+                    <li>Full customization</li>
+                    <li>Unlimited or custom aircraft management</li>
+                    <li>Unlimited cloud storage or as needed</li>
+                    <li>Custom workflow automation</li>
+                    <li>Custom system integration</li>
+                </ul>
+                <a href="enterprise.html" class="btn">Subscribe</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact">
+        <div class="contact-content">
+            <h2>Contact Us</h2>
+            <p>
+                Have questions or need support? Reach out to our team.<br>
+                📞 8-7000 Jollibee Delivery<br>
+                📱 +63 987-654-3210<br>
+                📱 +63 912-345-6789<br>
+                ✉️ inquiry@compliFLY.com
+            </p>
+        </div>
+      
+    <div class="star" style="top: 7%; left: 12%;"></div>
+<div class="star" style="top: 18%; left: 65%;"></div>
+<div class="star" style="top: 27%; left: 48%;"></div>
+<div class="star" style="top: 33%; left: 84%;"></div>
+<div class="star" style="top: 42%; left: 22%;"></div>
+<div class="star" style="top: 51%; left: 73%;"></div>
+<div class="star" style="top: 59%; left: 17%;"></div>
+<div class="star" style="top: 64%; left: 91%;"></div>
+<div class="star" style="top: 70%; left: 38%;"></div>
+<div class="star" style="top: 76%; left: 57%;"></div>
+<div class="star" style="top: 83%; left: 29%;"></div>
+<div class="star" style="top: 88%; left: 79%;"></div>
+<div class="star" style="top: 93%; left: 10%;"></div>
+<div class="star" style="top: 12%; left: 90%;"></div>
+<div class="star" style="top: 24%; left: 35%;"></div>
+<div class="star" style="top: 39%; left: 60%;"></div>
+<div class="star" style="top: 46%; left: 82%;"></div>
+<div class="star" style="top: 53%; left: 26%;"></div>
+<div class="star" style="top: 67%; left: 50%;"></div>
+<div class="star" style="top: 72%; left: 88%;"></div>
+<div class="star" style="top: 81%; left: 44%;"></div>
+<div class="star" style="top: 90%; left: 66%;"></div>
+<div class="star" style="top: 95%; left: 32%;"></div>
+<div class="star" style="top: 5%; left: 77%;"></div>
+
+    <div class="shooting-star" id="shooting1"></div>
+    <div class="shooting-star" id="shooting2"></div>
+    <div class="shooting-star" id="shooting3"></div>
+
+</body>
+    </section>
+    <script>
+    function createShootingStar() {
+        const stars = document.querySelectorAll('.shooting-star');
+        const randomStar = stars[Math.floor(Math.random() * stars.length)];
+        const startX = Math.random() * window.innerWidth;
+        const startY = Math.random() * window.innerHeight * 2.5;
+        
+        randomStar.style.left = startX + 'px';
+        randomStar.style.top = startY + 'px';
+        randomStar.style.animationDuration = (Math.random() * 2 + 1) + 's';
+        randomStar.style.animationDelay = '0s';
+        
+        setTimeout(() => {
+            randomStar.style.animationDelay = '10s';
+        }, 3000);
+    }
+
+    setInterval(createShootingStar, Math.random() * 10000 + 5000);
+</script>
+</body>
+</html>

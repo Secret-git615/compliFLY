@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Supabase PDF Upload</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #000020;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      border: 2px solid #0582ca;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      max-width: 500px;
+      width: 100%;
+    }
+    h2 {
+            color: #E2E2B6;
+      margin-bottom: 20px;
+    }
+    input[type="file"] {
+      margin-bottom: 15px;
+      padding: 10px;
+      border: 1px solid #0582ca;
+      border-radius: 4px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    button {
+      background-color: #0582ca;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      width: 100%;
+      margin-bottom: 15px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    #status {
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 15px;
+    }
+    #status.error {
+      color: red;
+    }
+    #status.success {
+      color: green;
+    }
+    #uploadedFiles {
+      text-align: left;
+      margin-top: 20px;
+    }
+    #uploadedFiles h3 {
+    color: #E2E2B6;
+    margin-bottom: 10px;
+    }
+    #uploadedFiles ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    #uploadedFiles li {
+      margin-bottom: 5px;
+    }
+    #uploadedFiles a {
+      color: #007bff;
+      text-decoration: none;
+    }
+    #uploadedFiles a:hover {
+      text-decoration: underline;
+    }
+    #totalSize {
+      font-size: 14px;
+      color: #ffffff;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Upload PDFs to Supabase</h2>
+    <input type="file" id="fileInput" accept="application/pdf" multiple>
+    <button id="uploadBtn">Upload Selected PDFs</button>
+    <p id="status"></p>
+    <div id="uploadedFiles">
+      <h3>Uploaded PDFs:</h3>
+      <ul id="fileList"></ul>
+    </div>
+    <p id="totalSize">Total uploaded size: 0 MB</p>
+  </div>
+
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+    const SUPABASE_URL = "https://hgapmjtytsejbhjsguxl.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhnYXBtanR5dHNlamJoanNndXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE5MTYwMzAsImV4cCI6MjA3NzQ5MjAzMH0.Y-mt-KCf7KSL0pyP6NLlBIEHeD6Oic1aGoCo7BMYigY";
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const fileInput = document.getElementById("fileInput");
+    const uploadBtn = document.getElementById("uploadBtn");
+    const status = document.getElementById("status");
+    const fileList = document.getElementById("fileList");
+    const totalSizeDisplay = document.getElementById("totalSize");
+
+    let totalUploadedSize = 0;
+    const maxTotalSize = 1 * 1024 * 1024 * 1024;
+    const maxFileSize = 10 * 1024 * 1024;
+
+    uploadBtn.addEventListener("click", async () => {
+      const files = Array.from(fileInput.files);
+      if (files.length === 0) {
+        status.textContent = "Please choose PDF files first!";
+        status.className = "error";
+        return;
+      }
+
+      let batchSize = 0;
+      for (const file of files) {
+        batchSize += file.size;
+      }
+
+      if (totalUploadedSize + batchSize > maxTotalSize) {
+        status.textContent = `❌ Total upload size would exceed 1GB limit! Current: ${(totalUploadedSize / (1024 * 1024 * 1024)).toFixed(2)} GB`;
+        status.className = "error";
+        return;
+      }
+
+      status.textContent = "Uploading...";
+      status.className = "";
+      let uploadSuccessCount = 0;
+
+      for (const file of files) {
+        if (file.type !== "application/pdf") {
+          status.textContent = `❌ Only PDF files are allowed! Skipped: ${file.name}`;
+          status.className = "error";
+          continue;
+        }
+        if (file.size > maxFileSize) {
+          status.textContent = `❌ File size must be under 10MB! Skipped: ${file.name}`;
+          status.className = "error";
+          continue;
+        }
+
+        const fileName = `${Date.now()}_${file.name}`;
+        const { data, error } = await supabase.storage.from("files").upload(fileName, file);
+
+        if (error) {
+          status.textContent = `❌ Upload failed for ${file.name}: ${error.message}`;
+          status.className = "error";
+          continue;
+        }
+
+        const { data: publicUrl } = supabase.storage.from("files").getPublicUrl(fileName);
+
+        const li = document.createElement("li");
+        li.innerHTML = `<a href="${publicUrl.publicUrl}" target="_blank">${file.name}</a> (${(file.size / (1024 * 1024)).toFixed(2)} MB)`;
+        fileList.appendChild(li);
+        totalUploadedSize += file.size;
+        uploadSuccessCount++;
+      }
+
+      totalSizeDisplay.textContent = `Total uploaded size: ${(totalUploadedSize / (1024 * 1024 * 1024)).toFixed(2)} GB`;
+
+      if (uploadSuccessCount > 0) {
+        status.textContent = `✅ ${uploadSuccessCount} PDF(s) uploaded successfully!`;
+        status.className = "success";
+      } else {
+        status.textContent = "❌ No files were uploaded.";
+        status.className = "error";
+      }
+      fileInput.value = "";
+    });
+  </script>
+</body>
+</html>

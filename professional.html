@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CompliFLY - Subscribe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #021526 0%, #03346E 100%);
+            color: #E2E2B6;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .wrapper {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 3rem;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 1s ease;
+            text-align: center;
+        }
+
+        h1 {
+            color: #6EACDA;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            font-weight: 700;
+        }
+
+        .plan-summary {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .plan-summary h2 {
+            color: #E2E2B6;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .plan-summary p {
+            color: #6EACDA;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #E2E2B6;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .form-group input:focus {
+            border-color: #6EACDA;
+            box-shadow: 0 0 10px rgba(110, 172, 218, 0.5);
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            background: #6EACDA;
+            color: #021526;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-top: 1rem;
+        }
+
+        button:hover {
+            background: #03346E;
+            color: #E2E2B6;
+            transform: translateY(-2px);
+        }
+
+        .back-link {
+            margin-top: 2rem;
+            color: #6EACDA;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .back-link:hover {
+            color: #E2E2B6;
+            text-decoration: underline;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .wrapper {
+                padding: 2rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <h1>Subscribe to CompliFLY</h1>
+        <div class="plan-summary">
+            <h2>Selected Plan: <span id="planName">Professional</span></h2>
+            <p id="planPrice">₱8,000.00 / year</p>
+        </div>
+        <form id="subscriptionForm" onsubmit="handleSubmit(); return false;">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Enter your username" required />
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="Enter your email" required />
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter your password" required />
+            </div>
+            <div class="form-group">
+                <label for="cardNumber">Card Number</label>
+                <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" required />
+            </div>
+            <div class="form-group">
+                <label for="expiry">Expiry Date</label>
+                <input type="text" id="expiry" placeholder="MM/YY" required />
+            </div>
+            <div class="form-group">
+                <label for="cvv">CVV</label>
+                <input type="text" id="cvv" placeholder="123" required />
+            </div>
+            <button type="submit">Complete Subscription</button>
+        </form>
+        <a href="index.html#pricing" class="back-link">← Back to Pricing</a>
+    </div>
+
+<script type="module">
+import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { auth, db } from "./professional.js";
+
+console.log("JavaScript is working.");
+
+const now = new Date();
+const future = new Date(now.getFullYear() + 1, now.getMonth(), now.getDate());
+const month = (future.getMonth() + 1).toString().padStart(2, '0');
+const year = future.getFullYear().toString().slice(-2);
+const expiryValue = `${month}/${year}`;
+document.getElementById('expiry').value = expiryValue;
+
+window.handleSubmit = handleSubmit;
+
+async function handleSubmit() {
+  const username = document.getElementById('username').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  
+  const planName = document.getElementById('planName').textContent.trim();
+
+  if (!username || !email || !password) {
+    alert('Please fill in all fields.');
+    return;
+  }
+
+  if (!validateEmail(email)) {
+    alert('Invalid email format.');
+    return;
+  }
+
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+
+    alert('Subscription successful! Redirecting to login...');
+    window.location.href = "Login.html";
+
+    await setDoc(doc(db, "users", user.uid), {
+      username,
+      email,
+      uid: user.uid,
+      plan: planName,
+      createdAt: new Date()
+    });
+
+  } catch (error) {
+    alert(`Registration failed: ${error.message}`);
+  }
+}
+
+function validateEmail(email) {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(email);
+}
+</script>
+
+</body>
+</html>

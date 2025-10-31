@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CompliFLY - Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #000020;
+            color: #6EACDA;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .wrapper {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 3rem;
+            max-width: 450px;
+            width: 100%;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 1s ease;
+            text-align: center;
+        }
+
+        h1 {
+            color: #E2E2B6;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            font-weight: 700;
+        }
+
+        h2 {
+            color: #E2E2B6;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            font-weight: 700;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        input:focus, select:focus {
+            border-color: #6EACDA;
+            box-shadow: 0 0 10px rgba(110, 172, 218, 0.5);
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            background: #6EACDA;
+            color: #021526;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-top: 1rem;
+        }
+
+        button:hover {
+            background: #03346E;
+            color: #E2E2B6;
+            transform: translateY(-2px);
+        }
+
+        .forgot-password {
+            display: block;
+            margin-top: 1.5rem;
+            color: #6EACDA;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .forgot-password:hover {
+            color: #E2E2B6;
+            text-decoration: underline;
+        }
+
+        p {
+            margin-top: 2rem;
+            color: #E2E2B6;
+            font-size: 1rem;
+        }
+
+        a {
+            color: #6EACDA;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        a:hover {
+            color: #E2E2B6;
+            text-decoration: underline;
+        }
+
+        .plan-selection {
+            margin-bottom: 2rem;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .wrapper {
+                padding: 2rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+
+        option {
+            color: #000020;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <h1>Login</h1>
+        
+        <!-- PLAN SELECTION -->
+        <div class="plan-selection">
+            <h2>Select Your Subscribed Plan</h2>
+            <div class="form-group">
+                <select id="plan" required>
+                    <option value="">Select a plan</option>
+                    <option value="basic">Basic</option>
+                    <option value="professional">Professional</option>
+                    <option value="enterprise">Enterprise</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- LOGIN FORM -->
+        <div id="loginForm">
+            <div class="form-group">
+                <input id="email" type="email" placeholder="Email" required />
+            </div>
+            <div class="form-group">
+                <input id="password" type="password" placeholder="Password" required />
+            </div>
+            <button id="loginBtn">Login</button>
+            <a href="FP.html" class="forgot-password">Forgot Password?</a>
+            <p>Still don't have an account? <a href="index.html#pricing">Make one</a></p>
+        </div>
+    </div>
+    <script type="module">
+  import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+  import { auth as basicAuth } from "./basic.js";
+  import { auth as proAuth } from "./professional.js";
+  import { auth as entAuth } from "./enterprise.js";
+
+  console.log("✅ Script loaded.");
+
+  document.getElementById('loginBtn').addEventListener('click', handleSubmit);
+
+  async function handleSubmit() {
+    console.log("Login button clicked.");
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const selectedPlan = document.getElementById('plan').value;
+
+    if (!email || !password || !selectedPlan) {
+      alert('Please fill in all fields and select a plan.');
+      return;
+    }
+
+    let auth;
+    if (selectedPlan === "basic") auth = basicAuth;
+    else if (selectedPlan === "professional") auth = proAuth;
+    else if (selectedPlan === "enterprise") auth = entAuth;
+
+    console.log("Selected plan:", selectedPlan, "Using auth:", auth);
+
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      alert(`✅ Logged in as ${user.email} under ${selectedPlan} plan!`);
+      window.location.href = `${selectedPlan}_home.html`;
+    } catch (error) {
+      console.error("Login error:", error);
+      alert(`❌ Login failed: ${error.message}`);
+    }
+  }
+</script>
+
+</body>
+</html>
