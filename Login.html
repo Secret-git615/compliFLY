@@ -220,7 +220,7 @@
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       alert(`✅ Logged in as ${user.email} under ${selectedPlan} plan!`);
-      window.location.href = `${userPlan}_home.html?uid=${user.uid}`;
+      window.location.href = `${userPlan}_home.html?@${user.email}`;
     } catch (error) {
       console.error("Login error:", error);
       alert(`❌ Login failed: ${error.message}`);
