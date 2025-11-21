@@ -207,7 +207,7 @@
   }
 
   function viewAircraft(name) {
-    window.open(`b_aircraft.html?name=${encodeURIComponent(name)}`, "_blank");
+    window.open(`b_aircraft.html?uid=${user.uid}_name=${encodeURIComponent(name)}`, "_blank");
   }
 
   function deleteAircraft(btn) {
